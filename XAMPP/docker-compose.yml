@@ -1,0 +1,36 @@
+version: '3.9'
+services:
+  php-env:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./src:/var/www/html
+    ports:
+      - 9000:80
+    depends_on:
+      - mysql_db
+
+  mysql_db:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: php_db
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - '3306:3306'
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    restart: always
+    ports:
+      - 9001:80
+    environment:
+      PMA_ARBITRARY: 1
+    depends_on:
+      - mysql_db
+
+volumes:
+  mysql_data:
